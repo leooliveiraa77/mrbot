@@ -26,7 +26,7 @@ dotenv.config({ path: "./.env" });
 
   //bot process
   await page.waitForSelector("input");
-  await page.type("input", process.env.USERNAME_ENTRY, { delay: 50 });
+  await page.type("input", process.env.USERNAME_ENTRY, { delay: 100 });
 
   await page.keyboard.press("Enter");
 
@@ -45,13 +45,19 @@ dotenv.config({ path: "./.env" });
   await page.waitForSelector("#bnp_btn_accept");
   await page.click("#bnp_btn_accept");
 
-  const howtodoit = async () => {
-    let numberAttemps = 30;
+  const searchWordsHandler = async () => {
+    let numberAttemps = 30; //how many searchs🕵️
 
     const searchAttemps = setInterval(async () => {
-      console.log("to esperando " + numberAttemps);
+      let amountOfWords = Math.random() * 3; //how many words will be typed
+
+      console.log("Attemp number " + numberAttemps);
+
       await page.goto(
-        `https://www.bing.com/search?FORM=U523DF&PC=U523&q=${generate()}`,
+        `https://www.bing.com/search?FORM=U523DF&PC=U523&q=${generate({
+          exactly: 1,
+          wordsPerString: Math.ceil(amountOfWords),
+        })}`,
         {
           waitUntil: "domcontentloaded",
           timeout: 0,
@@ -59,11 +65,11 @@ dotenv.config({ path: "./.env" });
       );
       if (numberAttemps === 1) {
         clearInterval(searchAttemps);
-        console.log("funcionou");
-        // await browser.close();
+        console.log("well done");
+        //await browser.close();
       }
       numberAttemps -= 1;
-    }, 3000);
+    }, 7000);
   };
-  await howtodoit();
+  await searchWordsHandler();
 })();
