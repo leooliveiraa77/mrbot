@@ -11,6 +11,7 @@ dotenv.config({ path: "./.env" });
 let userName;
 let userPassword;
 let userAtemmpsNumber;
+let headlessStatus;
 
 // create the IO interface
 // also specify the input and output sources
@@ -21,15 +22,25 @@ const commandLineIO = readline.createInterface({
 
 // show a question to the user
 commandLineIO.question(
-  "Wich user do you wanna get Microsoft reward points with Mr.Bot? (1: main or 2: secondary)",
+  "Should Mr.Bot work on headless mode? (y: yes or n: not)",
   (answer) => {
-    answer === "1"
-      ? loginUserHandler(1)
-      : answer === "2"
-      ? loginUserHandler(2)
-      : console.log("There's no such user!");
+    answer === "n" ? (headlessStatus = false) : (headlessStatus = true);
+    chooseUser();
   }
 );
+
+const chooseUser = () => {
+  commandLineIO.question(
+    "Wich user do you wanna get Microsoft reward points with Mr.Bot? (1: main or 2: secondary)",
+    (answer) => {
+      answer === "1"
+        ? loginUserHandler(1)
+        : answer === "2"
+        ? loginUserHandler(2)
+        : console.log("There's no such user!");
+    }
+  );
+};
 
 const howManyQuestion = () => {
   commandLineIO.question(
@@ -55,7 +66,7 @@ const loginUserHandler = (account) => {
 
 const botInit = async () => {
   // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: headlessStatus });
   const page = await browser.newPage();
   await page.setViewport({ width: 1366, height: 768 });
 
@@ -110,7 +121,9 @@ const botInit = async () => {
       if (numberAttemps === 1) {
         clearInterval(searchAttemps);
         console.log("well done");
-        await browser.close();
+        if (headlessStatus === true) {
+          await browser.close();
+        }
       }
       numberAttemps -= 1;
     }, 7000);
