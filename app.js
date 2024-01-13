@@ -104,7 +104,7 @@ const botInit = async () => {
     let numberAttemps = userAtemmpsNumber; //how many searchs🕵️
 
     const searchAttemps = setInterval(async () => {
-      let amountOfWords = Math.random() * 3; //how many words will be typed
+      let amountOfWords = Math.random() * 3 + 3; //how many words will be typed
 
       console.log("Attemp number " + numberAttemps);
 
